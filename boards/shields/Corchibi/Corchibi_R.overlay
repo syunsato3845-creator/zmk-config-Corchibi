@@ -8,22 +8,6 @@
     col-offset = <6>;
 };
 
-&gpio0 {
-    status = "okay";
-    
-    pat9125_cursor_ncs {
-        gpio-hog;
-        gpios = <4 GPIO_ACTIVE_HIGH>;
-        output-high;
-    };
-    
-    pat9125_scroll_ncs {
-        gpio-hog;
-        gpios = <2 GPIO_ACTIVE_HIGH>;
-        output-low;
-    };
-};
-
 &kscan0 {
     compatible = "zmk,kscan-gpio-charlieplex";
     gpios
