@@ -4,8 +4,7 @@
 #include <input/processors.dtsi>
 
 &default_transform {
-    // テスト用に一時的に無効化。本番環境（左右分割）ではコメントアウトを外してください。
-    // col-offset = <6>;
+    col-offset = <6>;
 };
 
 &kscan0 {
@@ -34,16 +33,17 @@
     };
 };
 
-// 右手用メインリスナー（マウス移動用）
-&trackball_listener_R {
-    status = "okay";
-    device = <&trackball_R>;
-    input-processors = 
-        <&zip_temp_gp_speed_scaler 4000 15>,
-        <&zip_xy_scaler 1 1>;
-};
-
 / {
+    // 外部モジュールを使用した高度な加速度ノードの定義
+    zip_pointing_accel: zip_pointing_accel {
+        compatible = "zmk,input-processor-pointing-acceleration";
+        min-factor = <1000>; // 1000 = 1倍（ゆっくり動かす時はそのままの速度）
+        max-factor = <5000>; // 5000 = 最大で5倍まで加速
+        speed-threshold = <500>; // 動かす速さが500カウント/秒を超えると加速が始まる
+        speed-max = <2000>; // 動かす速さが2000に達すると、最大の5倍ゲインになる
+        acceleration-exponent = <2>; // 2次曲線（徐々に強くなるスムーズな加速カーブ）
+    };
+
     // 右手用スクロールリスナー（スクロール専用）
     trackball_listener_R_scroll: trackball_listener_R_scroll {
         compatible = "zmk,input-listener";
@@ -53,6 +53,16 @@
             <&zip_xy_to_scroll_mapper>,
             <&zip_scroll_scaler 1 4>;
     };
+};
+
+// 右手用メインリスナー（マウス移動用）
+&trackball_listener_R {
+    status = "okay";
+    device = <&trackball_R>;
+    input-processors = 
+        // ここで上で定義した加速度ノードを適用
+        <&zip_pointing_accel>,
+        <&zip_xy_scaler 1 1>;
 };
 
 &i2c0 {
@@ -71,8 +81,8 @@
         reg = <0x73>;
         status = "okay";
         motion-gpios = <&gpio1 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        res-x-cpi = <600>;
-        res-y-cpi = <600>;
+        res-x-cpi = <1200>;
+        res-y-cpi = <1200>;
         zephyr,axis-x = <INPUT_REL_X>;
         zephyr,axis-y = <INPUT_REL_Y>;
     };
