@@ -37,7 +37,7 @@
 &pointer_accel {
     input-type = <INPUT_EV_REL>;
     codes = <INPUT_REL_X INPUT_REL_Y>;
-    sensor-dpi = <1000>;
+    sensor-dpi = <600>;
     min-factor = <1000>; 
     max-factor = <1250>; 
     speed-threshold = <500>; 
@@ -61,7 +61,6 @@
     status = "okay";
     device = <&trackball_R>;
     input-processors = 
-        <&zip_temp_layer 1 700>,
         <&pointer_accel>;
 
     scroll_layer {
@@ -88,8 +87,8 @@
         reg = <0x73>;
         status = "okay";
         motion-gpios = <&gpio1 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        res-x-cpi = <1000>;
-        res-y-cpi = <1000>;
+        res-x-cpi = <600>;
+        res-y-cpi = <600>;
         zephyr,axis-x = <INPUT_REL_X>;
         zephyr,axis-y = <INPUT_REL_Y>;
     };
